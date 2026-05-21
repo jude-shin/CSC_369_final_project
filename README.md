@@ -5,7 +5,10 @@
     time frame that the book was written in.
 
 ## Running on CSL Servers
-Running "make run" will pull the latest changes from github, then build the 
-scala binaries, and run the code on the HDFS
+Log into the ambari servers, then execute the following code:
 
-    TODO: run throuh HDFS, right now, the scala code is run on one node
+    make run
+
+Running "make run" will pull the latest changes from github, then build the 
+scala binaries, and run the code on the HDFS.
+TODO: run throuh HDFS, right now, the scala code is run on one node
