@@ -17,3 +17,20 @@ TODO: run throuh HDFS, right now, the scala code is run on one node
 You will need to change the USERNAME in the Makefile before you run the code on 
 the servers. It might be useful to make the change, and then stash that change 
 popping it every time you need to run the code on the csl.
+
+## Dataset
+
+https://amazon-reviews-2023.github.io/
+
+2023
+
+## Delegation
+
+### Jude 
+- Most k similar users (based on average ratings, and average review length)
+
+### Will
+
+### Grace
+
+### Corey
