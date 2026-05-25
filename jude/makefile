@@ -24,7 +24,9 @@ copyHDFS: cleanHDFS
 	# Create the directory if it does not already exist
 	-hadoop fs -mkdir /user/jshin53/input/final
 	# Copy the reviews and the metadata from local to HDFS
+	hadoop fs -mkdir /user/jshin53/input/final/reviews/
 	hadoop fs -put ./reviews /user/jshin53/input/final/reviews/reviews
+	hadoop fs -mkdir /user/jshin53/input/final/metadata/
 	hadoop fs -put ./metadata /user/jshin53/input/final/metadata/metadata
 	# Remove local files
 	rm reviews
