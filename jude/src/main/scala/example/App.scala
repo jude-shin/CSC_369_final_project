@@ -17,7 +17,24 @@ object App {
     // Spark setup
     val conf = new SparkConf().setAppName("App")
     val sc = new SparkContext(conf)
+
+    // Reviews Dataset
+    val reviewsRdd = sc.textFile("input/final/reviews/")
+      .take(10).foreach(println)
+    //   .map(l => parseMetadata(l))
+
+    // Metadata Dataset
+    // val metadataRdd = sc.textFile("input/final/metadata/").map(l => parseReviews(l))
+
+    // Join the reviews and the metadata on the parent_asin number
+    // var rdd = reviewsRdd.cartesian(metadataRdd)
+    //   .filter({
+    //     // ((ename, did), (did2, dname))
+    //     // empl._2 and dept._1 is the did
+    //     case (empl, dept) => empl._2 == dept._1
+    //     case _ => throw new IllegalArgumentException("You are the problem... You should never be here!")
+    //   })
+
     
-    println("Hello!")
   }
 }
