@@ -12,35 +12,35 @@ import scala.util.parsing.json.JSON
 
 object Parser {
   // Type alias tuples with named fields
-  type Review = (
-    Double,
-    String, 
-    String, 
-    Array[String],
-    String,
-    String, 
-    String,
-    Int,
-    Boolean,
-    Int
+  type Metadata = (
+    String,                    // main_category
+    String,                    // title
+    Double,                    // average_rating
+    Int,                       // rating_number
+    Array[String],             // features
+    Array[String],             // description
+    Double,                    // price
+    Array[Map[String, String]],// images
+    Array[String],             // videos
+    String,                    // store
+    Array[String],             // categories
+    Map[String, String],       // details
+    String,                    // parent_asin
+    String                     // bought_together
   )
 
   // NOTE: details is a dictionary and might be hard to parse
-  type Metadata = (
-    String, 
-    String, 
-    String,
-    Int,
-    Array[String],
-    Array[String],
-    Double,
-    Array[String],
-    Array[String],
-    String, 
-    Array[String],
-    Map[String, String],
-    String,
-    String
+  type Review = (
+    Double,                     // rating
+    String,                     // title
+    String,                     // text
+    Array[Map[String, String]], // images
+    String,                     // asin
+    String,                     // parent_asin
+    String,                     // user_id
+    Long,                       // timestamp
+    Boolean,                    // verified_purchase
+    Int                         // helpful_vote
   )
 
   // ===========================================================================
@@ -68,11 +68,40 @@ object Parser {
       case _ => 0
     }.getOrElse(0)
 
+  def bool(m: Map[String, Any], k: String): Boolean =
+    m.get(k).map {
+      case b: Boolean => b
+      case s: String => s.toBoolean
+      case _ => false
+    }.getOrElse(false)
+
+  def long(m: Map[String, Any], k: String): Long =
+    m.get(k).map {
+      case d: Double => d.toLong
+      case i: Int => i.toLong
+      case l: Long => l
+      case s: String => s.toLong
+      case _ => 0L
+    }.getOrElse(0L)
+
   def arr(m: Map[String, Any], k: String): Array[String] =
     m.get(k).map {
       case xs: List[Any] => xs.map(_.toString).toArray
       case _ => Array[String]()
     }.getOrElse(Array[String]())
+
+  def arrMap(m: Map[String, Any], k: String): Array[Map[String, String]] =
+    m.get(k).map {
+      case xs: List[Any] =>
+        xs.collect {
+          case d: Map[String, Any] =>
+            d.map {
+              case (key, null) => key -> ""
+              case (key, value) => key -> value.toString
+            }
+        }.toArray
+              case _ => Array[Map[String, String]]()
+    }.getOrElse(Array[Map[String, String]]())
 
   def detailsMap(m: Map[String, Any], k: String): Map[String, String] =
     m.get(k).map {
@@ -80,13 +109,6 @@ object Parser {
         d.map { case (key, value) => key -> value.toString }
       case _ => Map[String, String]()
     }.getOrElse(Map[String, String]())
-
-  def bool(m: Map[String, Any], k: String): Boolean =
-    m.get(k).map {
-      case b: Boolean => b
-      case s: String => s.toBoolean
-      case _ => false
-    }.getOrElse(false)
 
   // ===========================================================================
 
@@ -100,12 +122,12 @@ object Parser {
       case Some(m: Map[String, Any]) => (
         str(m, "main_category"),
         str(m, "title"),
-        str(m, "average_rating"),
+        double(m, "average_rating"),
         int(m, "rating_number"),
         arr(m, "features"),
         arr(m, "description"),
         double(m, "price"),
-        arr(m, "images"),
+        arrMap(m, "images"),
         arr(m, "videos"),
         str(m, "store"),
         arr(m, "categories"),
@@ -127,19 +149,20 @@ object Parser {
         double(m, "rating"),
         str(m, "title"),
         str(m, "text"),
-        arr(m, "images"),
+        arrMap(m, "images"),
         str(m, "asin"),
         str(m, "parent_asin"),
         str(m, "user_id"),
-        int(m, "timestamp") match {
-          case 0 => int(m, "sort_timestamp")
+        long(m, "timestamp") match {
+          case 0L => long(m, "sort_timestamp")
           case t => t
         },
         bool(m, "verified_purchase"),
         int(m, "helpful_vote") match {
           case 0 => int(m, "helpful_votes")
           case h => h
-        })
+        }
+        )
       case _ => null.asInstanceOf[Review]
     }
   }
