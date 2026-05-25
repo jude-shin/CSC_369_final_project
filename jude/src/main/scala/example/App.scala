@@ -29,9 +29,9 @@ object App {
     // Join the reviews and the metadata on the parent_asin number
     var rdd = reviewsRdd.cartesian(metadataRdd)
       .filter({
-        // Review._13 is the parent_asin
-        // Metadata._6 is the parent_asin
-        case (review, metadata) => review._13 == metadata._6
+        // Review._6 is the parent_asin
+        // Metadata._13 is the parent_asin
+        case (review, metadata) => review._6 == metadata._13
         case _ => throw new IllegalArgumentException("Programmer's Fault...")
       })
       .take(3).foreach(println)
