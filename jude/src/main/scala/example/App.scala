@@ -20,8 +20,8 @@ object App {
 
     // Reviews Dataset
     val reviewsRdd = sc.textFile("input/final/reviews/")
+      .map(l => parseMetadata(l))
       .take(10).foreach(println)
-    //   .map(l => parseMetadata(l))
 
     // Metadata Dataset
     // val metadataRdd = sc.textFile("input/final/metadata/").map(l => parseReviews(l))
