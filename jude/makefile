@@ -20,13 +20,18 @@ dataset:
 	gzip -d reviews.gz
 	gzip -d metadata.gz
 
-copyHDFS:
-	-hadoop fs -rm -r /user/jshin53/input/final
-	hadoop fs -mkdir /user/jshin53/input/final
-	
-	hadoop fs -put ./local_inputs/q1_integers /user/jshin53/input/asgn05/q1_integers/q1_integers
+copyHDFS: cleanHDFS
+	# Create the directory if it does not already exist
+	-hadoop fs -mkdir /user/jshin53/input/final
+	# Copy the reviews and the metadata from local to HDFS
+	hadoop fs -put ./reviews /user/jshin53/input/final/reviews/reviews
+	hadoop fs -put ./metadata /user/jshin53/input/final/metadata/metadata
+	# Remove local files
+	rm reviews
+	rm metadata 
 
 cleanHDFS:
+	# Remove any old HDFS files
 	hadoop fs -rm -r /user/jshin53/input/final
 
 
