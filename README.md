@@ -45,3 +45,15 @@ You can also use the following shell command to decompress the files
 ### Grace
 
 ### Corey
+
+## Findings:
+When using Spark for the RDD processing, there were two join methods; one was 
+using the .join() function, and the other was using the .cartesian() with the 
+.filter() function. 
+
+The .join() method took a total of 41.1178 minutes, whereas the .cartesian() 
+method took only 16.9457 minutes.
+
+The .join() method had two extra map cases, and the json files were long. I 
+think this is the reason the .join() method was so much slower than the 
+.cartesian() method. 
