@@ -1,4 +1,5 @@
 *.gz
 reviews
+small_reviews
 metadata
 *.json

@@ -18,13 +18,12 @@ object App {
     val conf = new SparkConf().setAppName("App")
     val sc = new SparkContext(conf)
 
-    // Reviews Dataset
-    val reviewsRdd = sc.textFile("input/final/reviews/")
+    // Metadata Dataset
+    val metadataRdd = sc.textFile("input/final/metadata/")
       .map(l => Parser.parseMetadata(l))
       .take(3).foreach(println)
 
-    // Metadata Dataset
-    // val metadataRdd = sc.textFile("input/final/metadata/").map(l => parseReviews(l))
+    // Reviews Dataset
 
     // Join the reviews and the metadata on the parent_asin number
     // var rdd = reviewsRdd.cartesian(metadataRdd)
