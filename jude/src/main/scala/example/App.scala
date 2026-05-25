@@ -18,6 +18,8 @@ object App {
     val conf = new SparkConf().setAppName("App")
     val sc = new SparkContext(conf)
 
+    val t0 = System.nanoTime()
+
     // Reviews Dataset
     val reviewsRdd = sc.textFile("input/final/reviews/")
       .map(Parser.parseReviews)
@@ -38,6 +40,10 @@ object App {
     // Join the reviews and the metadata on the parent_asin number
     var rdd = reviewsRdd.join(metadataRdd)
       .take(3).foreach(println)
-    
+  
+    // I want to see if there is a difference between join or cartesian product
+    val t1 = System.nanoTime()
+    println(s"Elapsed time: ${(t1 - t0) / 1e6}ms")
+
   }
 }
