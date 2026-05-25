@@ -18,11 +18,22 @@ You will need to change the USERNAME in the Makefile before you run the code on
 the servers. It might be useful to make the change, and then stash that change 
 popping it every time you need to run the code on the csl.
 
-## Dataset
+## Dataset (2023) - Video\_Games
 
 https://amazon-reviews-2023.github.io/
 
-2023
+### Curl Reviews and Metadata to Servers
+Use the following commands to curl the reviews and the metadata
+
+    curl -o reviews.gz https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/review_categories/Video_Games.jsonl.gz
+    curl -o metadata.gz https://mcauleylab.ucsd.edu/public_datasets/data/amazon_2023/raw/meta_categories/meta_Video_Games.jsonl.gz
+
+
+You can also use the following shell command to decompress the files
+
+    gzip -d reviews.gz
+    gzip -d metadata.gz
+
 
 ## Delegation
 
