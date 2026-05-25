@@ -18,22 +18,23 @@ object App {
     val conf = new SparkConf().setAppName("App")
     val sc = new SparkContext(conf)
 
+    // Reviews Dataset
+    val reviewsRdd = sc.textFile("input/final/reviews/")
+      .map(l => Parser.parseReviews(l))
+
     // Metadata Dataset
     val metadataRdd = sc.textFile("input/final/metadata/")
       .map(l => Parser.parseMetadata(l))
-      .take(3).foreach(println)
-
-    // Reviews Dataset
 
     // Join the reviews and the metadata on the parent_asin number
-    // var rdd = reviewsRdd.cartesian(metadataRdd)
-    //   .filter({
-    //     // ((ename, did), (did2, dname))
-    //     // empl._2 and dept._1 is the did
-    //     case (empl, dept) => empl._2 == dept._1
-    //     case _ => throw new IllegalArgumentException("You are the problem... You should never be here!")
-    //   })
-
+    var rdd = reviewsRdd.cartesian(metadataRdd)
+      .filter({
+        // Review._13 is the parent_asin
+        // Metadata._6 is the parent_asin
+        case (review, metadata) => review._13 == metadata._6
+        case _ => throw new IllegalArgumentException("Programmer's Fault...")
+      })
+      .take(3).foreach(println)
     
   }
 }
