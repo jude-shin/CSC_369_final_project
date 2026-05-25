@@ -22,20 +22,21 @@ object App {
     val reviewsRdd = sc.textFile("input/final/reviews/")
       .map(Parser.parseReviews)
       .filter(_ != null)
+      .map({
+        case (rating, title, text, images, asin, parent_asin, user_id, timestamp, verified_purchase, helpful_vote) => (parent_asin, (rating, title, text, images, asin, parent_asin, user_id, timestamp, verified_purchase, helpful_vote))
+      })
 
     // Metadata Dataset
     val metadataRdd = sc.textFile("input/final/metadata/")
       .map(Parser.parseMetadata)
       .filter(_ != null)
+      .map({
+        case (main_category, title, average_rating, rating_number, features, description, price, images, videos, store, categories, details, parent_asin bought_together) =>
+          (parent_asin, (main_category, title, average_rating, rating_number, features, description, price, images, videos, store, categories, details, parent_asin bought_together))
+      })
 
     // Join the reviews and the metadata on the parent_asin number
-    var rdd = reviewsRdd.cartesian(metadataRdd)
-      .filter({
-        // Review._6 is the parent_asin
-        // Metadata._13 is the parent_asin
-        case (review, metadata) => review._6 == metadata._13
-        case _ => throw new IllegalArgumentException("Programmer's Fault...")
-      })
+    var rdd = reviewsRdd.join(metadataRdd)
       .take(3).foreach(println)
     
   }

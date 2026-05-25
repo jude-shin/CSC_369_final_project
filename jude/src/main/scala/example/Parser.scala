@@ -12,6 +12,8 @@ import scala.util.parsing.json.JSON
 
 object Parser {
   // Type alias tuples with named fields
+  // (_, _, _, _, _, _, _, _, _, _, _, _, _, _)
+  // (main_category, title, average_rating, rating_number, features, description, price, images, videos, store, categories, details, parent_asin bought_together)
   type Metadata = (
     String,                    // main_category
     String,                    // title
@@ -30,6 +32,8 @@ object Parser {
   )
 
   // NOTE: details is a dictionary and might be hard to parse
+  // (_, _, _, _, _, _, _, _, _, _)
+  // (rating, title, text, images, asin, parent_asin, user_id, timestamp, verified_purchase, helpful_vote)
   type Review = (
     Double,                     // rating
     String,                     // title
