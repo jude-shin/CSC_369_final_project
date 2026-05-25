@@ -31,8 +31,8 @@ object App {
       .map(Parser.parseMetadata)
       .filter(_ != null)
       .map({
-        case (main_category, title, average_rating, rating_number, features, description, price, images, videos, store, categories, details, parent_asin bought_together) =>
-          (parent_asin, (main_category, title, average_rating, rating_number, features, description, price, images, videos, store, categories, details, parent_asin bought_together))
+        case (main_category, title, average_rating, rating_number, features, description, price, images, videos, store, categories, details, parent_asin, bought_together) =>
+          (parent_asin, (main_category, title, average_rating, rating_number, features, description, price, images, videos, store, categories, details, parent_asin, bought_together))
       })
 
     // Join the reviews and the metadata on the parent_asin number
