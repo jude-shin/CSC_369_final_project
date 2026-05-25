@@ -20,11 +20,13 @@ object App {
 
     // Reviews Dataset
     val reviewsRdd = sc.textFile("input/final/reviews/")
-      .map(l => Parser.parseReviews(l))
+      .map(Parser.parseReviews)
+      .filter(_ != null)
 
     // Metadata Dataset
     val metadataRdd = sc.textFile("input/final/metadata/")
-      .map(l => Parser.parseMetadata(l))
+      .map(Parser.parseMetadata)
+      .filter(_ != null)
 
     // Join the reviews and the metadata on the parent_asin number
     var rdd = reviewsRdd.cartesian(metadataRdd)

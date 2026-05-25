@@ -118,24 +118,28 @@ object Parser {
   // MAKE SURE to filter for empty tuples in the result
   //  ex) val parsed = lines.map(parseReviews).filter(_ != null)
   def parseMetadata(line: String): Metadata = {
-    JSON.parseFull(line.stripSuffix(",")) match {
-      case Some(m: Map[String, Any]) => (
-        str(m, "main_category"),
-        str(m, "title"),
-        double(m, "average_rating"),
-        int(m, "rating_number"),
-        arr(m, "features"),
-        arr(m, "description"),
-        double(m, "price"),
-        arrMap(m, "images"),
-        arr(m, "videos"),
-        str(m, "store"),
-        arr(m, "categories"),
-        detailsMap(m, "details"),
-        str(m, "parent_asin"),
-        str(m, "bought_together")
-      )
-      case _ => null.asInstanceOf[Metadata]
+    try {
+      JSON.parseFull(line.stripSuffix(",")) match {
+        case Some(m: Map[String, Any]) => (
+          str(m, "main_category"),
+          str(m, "title"),
+          double(m, "average_rating"),
+          int(m, "rating_number"),
+          arr(m, "features"),
+          arr(m, "description"),
+          double(m, "price"),
+          arrMap(m, "images"),
+          arr(m, "videos"),
+          str(m, "store"),
+          arr(m, "categories"),
+          detailsMap(m, "details"),
+          str(m, "parent_asin"),
+          str(m, "bought_together")
+        )
+        case _ => null.asInstanceOf[Metadata]
+      }
+    } catch {
+      case _: Throwable => null.asInstanceOf[Metadata]
     }
   }
 
@@ -144,26 +148,30 @@ object Parser {
   // Drops any tuples that weren't parsed correctly
   // MAKE SURE to filter for empty tuples in the result
   def parseReviews(line: String): Review = {
-    JSON.parseFull(line.stripSuffix(",")) match {
-      case Some(m: Map[String, Any]) => (
-        double(m, "rating"),
-        str(m, "title"),
-        str(m, "text"),
-        arrMap(m, "images"),
-        str(m, "asin"),
-        str(m, "parent_asin"),
-        str(m, "user_id"),
-        long(m, "timestamp") match {
-          case 0L => long(m, "sort_timestamp")
-          case t => t
-        },
-        bool(m, "verified_purchase"),
-        int(m, "helpful_vote") match {
-          case 0 => int(m, "helpful_votes")
-          case h => h
-        }
-        )
-      case _ => null.asInstanceOf[Review]
+    try {
+      JSON.parseFull(line.stripSuffix(",")) match {
+        case Some(m: Map[String, Any]) => (
+          double(m, "rating"),
+          str(m, "title"),
+          str(m, "text"),
+          arrMap(m, "images"),
+          str(m, "asin"),
+          str(m, "parent_asin"),
+          str(m, "user_id"),
+          long(m, "timestamp") match {
+            case 0L => long(m, "sort_timestamp")
+            case t => t
+          },
+          bool(m, "verified_purchase"),
+          int(m, "helpful_vote") match {
+            case 0 => int(m, "helpful_votes")
+            case h => h
+          }
+          )
+        case _ => null.asInstanceOf[Review]
+      }
+    } catch {
+      case _: Throwable => null.asInstanceOf[Review]
     }
   }
 }
