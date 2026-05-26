@@ -22,7 +22,7 @@ object App {
     preprocessData(sc, 
       "input/final/reviews/", 
       "input/final/metadata/",
-      "output/joined")
+      "joined") // I don't know if this is going to the HDFS /usr/USER/output directory automatically...
 
   }
 

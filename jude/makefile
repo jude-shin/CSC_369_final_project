@@ -36,6 +36,5 @@ cleanHDFS:
 	# Remove any old HDFS files
 	-hadoop fs -rm -r /user/jshin53/input/final
 
-
 clean:
 	rm -rf project target
