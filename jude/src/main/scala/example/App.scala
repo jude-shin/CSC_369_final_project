@@ -14,13 +14,26 @@ object App {
     Logger.getLogger("org").setLevel(Level.OFF)
     Logger.getLogger("akka").setLevel(Level.OFF)
 
+    // Spark setup
+    val conf = new SparkConf().setAppName("App")
+    val sc = new SparkContext(conf)
+
+    // Only have to do once
+    preprocessData(sc, 
+      "input/final/reviews/", 
+      "input/final/metadata/",
+      "output/joined")
+
+  }
+
+  def preprocessData(sc: SparkContext, reviewsPath: String, metadatPath: String, joinedPath: String) = {
     // Reviews Dataset
-    val reviewsRdd = sc.textFile("input/final/reviews/")
+    val reviewsRdd = sc.textFile(reviewsPath)
       .map(Parser.parseReviews)
       .filter(_ != null)
 
     // Metadata Dataset
-    val metadataRdd = sc.textFile("input/final/metadata/")
+    val metadataRdd = sc.textFile(metadatPath)
       .map(Parser.parseMetadata)
       .filter(_ != null)
 
@@ -32,7 +45,6 @@ object App {
         case (review, metadata) => review._6 == metadata._13
         case _ => throw new IllegalArgumentException("Programmer's Fault...")
       })
-      .take(3).foreach(println)
-
+      .saveAsTextFile(joinedPath)
   }
 }
