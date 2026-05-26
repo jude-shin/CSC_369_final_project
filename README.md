@@ -57,3 +57,13 @@ method took only 16.9457 minutes.
 The .join() method had two extra map cases, and the json files were long. I 
 think this is the reason the .join() method was so much slower than the 
 .cartesian() method. 
+
+
+## Presentation (Slides)
+- Describe the data
+- Why is it important?
+- implement some sort of algorithm (explain the algorithm)
+- No need for source code
+- Results (figures or pictures of results)
+- Main struggles of the project
+
