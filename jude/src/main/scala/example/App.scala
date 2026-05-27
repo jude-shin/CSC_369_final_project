@@ -44,7 +44,7 @@ object App {
     /* JOIN the datasets */
     /*********************/
     // Join the reviews and the metadata on the parent_asin number
-    var rdd = reviewsRdd.cartesian(metadataRdd)
+    val joined = reviewsRdd.cartesian(metadataRdd)
       .filter({
         // Review._6 is the parent_asin
         // Metadata._13 is the parent_asin
@@ -64,7 +64,6 @@ object App {
     // Only filter out the relevant information,
     // and convert it into a usable key-value pair
     // Key: user_id, Value: relevant information tuple
-    rdd = rdd
       .map({
         case (r, m) =>
           // (user_id, (rating, average_rating, price, parent_asin))
@@ -72,11 +71,11 @@ object App {
       })
   
     // For each user, associate an array of reviews a user has made
-    rdd = rdd.groupByKey()
+    .groupByKey()
 
     /****************/
     /* Save to File */
     /****************/
-    rdd.saveAsTextFile(processedPath)
+    .saveAsTextFile(processedPath)
   }
 }
