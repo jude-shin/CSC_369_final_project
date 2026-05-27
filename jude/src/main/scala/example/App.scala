@@ -66,9 +66,9 @@ object App {
     // Key: user_id, Value: relevant information tuple
     rdd = rdd
       .map({
-        case (review, metadata) =>
+        case (r, m) =>
           // (user_id, (rating, average_rating, price, parent_asin))
-          (review._7, (Review._1, Metadata._3, Metadata._13))
+          (r._7, (r._1, m._3, m._13))
       })
   
     // For each user, associate an array of reviews a user has made
