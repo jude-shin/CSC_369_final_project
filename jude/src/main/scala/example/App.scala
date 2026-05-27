@@ -34,23 +34,22 @@ object App {
     val reviewsRdd = sc.textFile(reviewsPath)
       .map(Parser.parseReviews)
       .filter(_ != null)
+      .map(r => (r._6, r))  // Review._6 is the parent_asin
 
     // Metadata Dataset
     val metadataRdd = sc.textFile(metadatPath)
       .map(Parser.parseMetadata)
       .filter(_ != null)
+      .map(m => (m._13, m)) // Metadata._13 is the parent_asin
+
 
     /*********************/
     /* JOIN the datasets */
     /*********************/
     // Join the reviews and the metadata on the parent_asin number
-    val joined = reviewsRdd.cartesian(metadataRdd)
-      .filter({
-        // Review._6 is the parent_asin
-        // Metadata._13 is the parent_asin
-        case (review, metadata) => review._6 == metadata._13
-        case _ => throw new IllegalArgumentException("Programmer's Fault...")
-      })
+    // val joined = reviewsRdd.join(metadataRdd)
+    val joined = sc.parallelize(reviewsRdd.join(metadataRdd)
+      .take(100))
   
     /*****************/
     /* Group by User */
@@ -65,9 +64,9 @@ object App {
     // and convert it into a usable key-value pair
     // Key: user_id, Value: relevant information tuple
       .map({
-        case (r, m) =>
+        case (parent_asin, (r, m)) =>
           // (user_id, (rating, average_rating, price, parent_asin))
-          (r._7, (r._1, m._3, m._13))
+          (r._7, (r._1, m._3, m._7, m._13))
       })
   
     // For each user, associate an array of reviews a user has made
