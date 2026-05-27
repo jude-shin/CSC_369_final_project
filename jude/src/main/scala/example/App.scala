@@ -22,7 +22,7 @@ object App {
     preprocessData(sc, 
       "input/final/reviews/", 
       "input/final/metadata/",
-      "processed") // I don't know if this is going to the HDFS /usr/USER/output directory automatically...
+      "processed")
 
   }
 
@@ -42,14 +42,13 @@ object App {
       .filter(_ != null)
       .map(m => (m._13, m)) // Metadata._13 is the parent_asin
 
-
     /*********************/
     /* JOIN the datasets */
     /*********************/
     // Join the reviews and the metadata on the parent_asin number
-    // val joined = reviewsRdd.join(metadataRdd)
-    val joined = sc.parallelize(reviewsRdd.join(metadataRdd)
-      .take(100))
+    val joined = reviewsRdd.join(metadataRdd)
+    // val joined = sc.parallelize(reviewsRdd.join(metadataRdd)
+    //   .take(100))
   
     /*****************/
     /* Group by User */
