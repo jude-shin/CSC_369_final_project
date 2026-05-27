@@ -22,11 +22,14 @@ object App {
     preprocessData(sc, 
       "input/final/reviews/", 
       "input/final/metadata/",
-      "joined") // I don't know if this is going to the HDFS /usr/USER/output directory automatically...
+      "processed") // I don't know if this is going to the HDFS /usr/USER/output directory automatically...
 
   }
 
-  def preprocessData(sc: SparkContext, reviewsPath: String, metadatPath: String, joinedPath: String) = {
+  def preprocessData(sc: SparkContext, reviewsPath: String, metadatPath: String, processedPath: String) = {
+    /*******************/
+    /* Inital Datasets */
+    /*******************/
     // Reviews Dataset
     val reviewsRdd = sc.textFile(reviewsPath)
       .map(Parser.parseReviews)
@@ -37,6 +40,9 @@ object App {
       .map(Parser.parseMetadata)
       .filter(_ != null)
 
+    /*********************/
+    /* JOIN the datasets */
+    /*********************/
     // Join the reviews and the metadata on the parent_asin number
     var rdd = reviewsRdd.cartesian(metadataRdd)
       .filter({
@@ -45,6 +51,32 @@ object App {
         case (review, metadata) => review._6 == metadata._13
         case _ => throw new IllegalArgumentException("Programmer's Fault...")
       })
-      .saveAsTextFile(joinedPath)
+  
+    /*****************/
+    /* Group by User */
+    /*****************/
+    // average_rating is in Metadata._3 (Double)
+    // price is in Metadata._7 (Double)
+    // parent_asin is in Metadata._13 (Double)
+    // rating is in Review._1 (Double)
+    // user_id is in Review._7 (String)
+
+    // Only filter out the relevant information,
+    // and convert it into a usable key-value pair
+    // Key: user_id, Value: relevant information tuple
+    rdd = rdd
+      .map({
+        case (review, metadata) =>
+          // (user_id, (rating, average_rating, price, parent_asin))
+          (review._7, (Review._1, Metadata._3, Metadata._13))
+      })
+  
+    // For each user, associate an array of reviews a user has made
+    rdd = rdd.groupByKey()
+
+    /****************/
+    /* Save to File */
+    /****************/
+    rdd.saveAsTextFile(processedPath)
   }
 }

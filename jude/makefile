@@ -6,10 +6,15 @@ CLASS = App
 all: scala
 
 scala:
+	# Pull the latest changes
 	git pull
+	# Build the project
 	sbt package
 
 run: scala
+	# Clean the output from HDFS
+	-hadoop fs -rm -r /user/jshin53/output
+	# Run the program with spark 
 	spark-submit --class $(PACKAGE).$(CLASS) --master yarn ./target/scala-2.11/$(PACKAGE)_2.11-0.1.jar
 
 dataset:
@@ -35,6 +40,6 @@ copyHDFS: cleanHDFS
 cleanHDFS:
 	# Remove any old HDFS files
 	-hadoop fs -rm -r /user/jshin53/input/final
-
+	-hadoop fs -rm -r /user/jshin53/output
 clean:
 	rm -rf project target
