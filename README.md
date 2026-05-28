@@ -37,17 +37,26 @@ You can also use the following shell command to decompress the files
     gzip -d reviews.gz
     gzip -d metadata.gz
 
+### Preprocessed Data
+
+IMPORTANT: to save some time on the rating prediction, we can use the data in
+processed. These are tuples of the form (user\_id, (rating, average\_rating, 
+price, parent\_asin)). Each user now has some sort of "identity" based on their
+previous ratings.
+
 ## Delegation
 
 ### Jude
 
 - Most k similar users (based on average ratings, and average review length)
+- KNN-like product rating prediction
 
 ### Will
 
 ### Grace
 
-- Find top N users with most reviews (from those users find their average rating, average # of tokens)
+- Find top N users with most reviews (from those users find their average 
+rating, average # of tokens)
 - Find top N users with most helpful reviews
 
 ### Corey
