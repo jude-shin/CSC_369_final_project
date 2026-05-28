@@ -55,7 +55,15 @@ previous ratings.
 
 ### Grace
 
-- Pearsons Algo
+- Pearsons Correlation Coefficient Algorithm
+Returns a value between -1 to 1 indicating the correlation where 1 is perfect positive correlation (2 users rate items identically), 0 is no correlation, and -1 is perfect negative correlation (2 users rate items oppositely)
+
+pearsonCorrelation(
+	user1Ratings: Iterable[(String, Double)],
+	user2Ratings: Iterable[(String, Double)]
+): Double
+
+userRatings is all ratings for given user as a (parent_asin, rating) pair
 
 ### Corey
 
