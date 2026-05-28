@@ -55,9 +55,7 @@ previous ratings.
 
 ### Grace
 
-- Find top N users with most reviews (from those users find their average 
-rating, average # of tokens)
-- Find top N users with most helpful reviews
+- Pearsons Algo
 
 ### Corey
 
