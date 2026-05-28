@@ -60,8 +60,7 @@ object Parser {
       case d: Double => d
       case i: Int => i.toDouble
       case s: String => s.toDouble
-      // case _ => 0.0
-      case _ => throw new IllegalArgumentException("You are the problem... You should never be here!")
+      case _ => 0.0
     }.getOrElse(0.0)
 
   def int(m: Map[String, Any], k: String): Int =
