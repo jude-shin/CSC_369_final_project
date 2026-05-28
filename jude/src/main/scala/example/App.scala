@@ -23,7 +23,6 @@ object App {
       "input/final/reviews/", 
       "input/final/metadata/",
       "processed")
-
   }
 
   def preprocessData(sc: SparkContext, reviewsPath: String, metadatPath: String, processedPath: String) = {
@@ -47,26 +46,27 @@ object App {
     /*********************/
     // Join the reviews and the metadata on the parent_asin number
     val joined = reviewsRdd.join(metadataRdd)
-    // val joined = sc.parallelize(reviewsRdd.join(metadataRdd)
-    //   .take(100))
   
     /*****************/
     /* Group by User */
     /*****************/
-    // average_rating is in Metadata._3 (Double)
-    // price is in Metadata._7 (Double)
     // parent_asin is in Metadata._13 (Double)
     // rating is in Review._1 (Double)
-    // user_id is in Review._7 (String)
 
     // Only filter out the relevant information,
     // and convert it into a usable key-value pair
     // Key: user_id, Value: relevant information tuple
-      .map({
-        case (parent_asin, (r, m)) =>
-          // (user_id, (rating, average_rating, price, parent_asin))
-          (r._7, (r._1, m._3, m._7, m._13))
+
+    // (user_id, [(rating, parent_asin)])
+      .map({ 
+        case (parent_asin, (r, m)) => (r._7, (r._1, m._13)) 
       })
+      .flatMapValues(t => t)
+      .map({
+        case (user_id, (rating, parent_asin)) => ((userId, parent_asin), rating)
+      })
+
+    // ((user_id, parent_asin), rating)
   
     // For each user, associate an array of reviews a user has made
     .groupByKey()
