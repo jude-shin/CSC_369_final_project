@@ -46,29 +46,14 @@ object App {
     /*********************/
     // Join the reviews and the metadata on the parent_asin number
     val joined = reviewsRdd.join(metadataRdd)
-  
-    /*****************/
-    /* Group by User */
-    /*****************/
-    // parent_asin is in Metadata._13 (Double)
-    // rating is in Review._1 (Double)
 
-    // Only filter out the relevant information,
-    // and convert it into a usable key-value pair
-    // Key: user_id, Value: relevant information tuple
-
-    // (user_id, [(rating, parent_asin)])
-      .flatMapValues({
-        case (r, m) => (r, m)
+    joined
+      .map ({
+        case (parent_asin, (r, m)) =>
+          val rating = r._1
+          val user_id = r._3 // assuming Review._3 is user_id
+          ((user_id, parent_asin), rating)
       })
-      .map({
-        case (user_id, (rating, parent_asin)) => ((userId, parent_asin), rating)
-      })
-
-    // ((user_id, parent_asin), rating)
-  
-    // For each user, associate an array of reviews a user has made
-    .groupByKey()
 
     /****************/
     /* Save to File */
