@@ -58,9 +58,9 @@ object App {
     // Key: user_id, Value: relevant information tuple
 
     // (user_id, [(rating, parent_asin)])
-      .map({ 
-        case (parent_asin, (r, m)) => (r._7, (r._1, m._13)) 
-      })
+      // .map({ 
+      //   case (parent_asin, (r, m)) => (r._7, (r._1, m._13)) 
+      // })
       .flatMapValues(t => t)
       .map({
         case (user_id, (rating, parent_asin)) => ((userId, parent_asin), rating)
