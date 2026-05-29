@@ -178,7 +178,9 @@ object Parser {
       case _: Throwable => null.asInstanceOf[Review]
     }
   }
+
   // =========================================================================== 
+
   def preprocessData(sc: SparkContext, reviewsPath: String, metadatPath: String, processedPath: String) = {
     /*******************/
     /* Inital Datasets */
@@ -201,12 +203,11 @@ object Parser {
     // Join the reviews and the metadata on the parent_asin number
     val joined = reviewsRdd.join(metadataRdd)
 
+    // rating = r._1 
+    // user_id = r._7
     joined
       .map ({
-        case (parent_asin, (r, m)) =>
-          val rating = r._1
-          val user_id = r._3 // assuming Review._3 is user_id
-          ((user_id, parent_asin), rating)
+        case (parent_asin, (r, m)) => ((r._7, parent_asin), r._1)
       })
 
     /****************/
